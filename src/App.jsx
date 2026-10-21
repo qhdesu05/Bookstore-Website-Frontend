@@ -1,11 +1,19 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
+import Loading from "./components/Loading";
 import ContactPage from "./pages/contact";
 import LoginPage from "./pages/login";
+import RegisterPage from "./pages/register";
+import { callFetchAccount } from "./services/api";
+import {
+  doGetAccountAction,
+  doGetAccountFailAction,
+} from "./redux/account/accountSlice";
 import "./styles/reset.scss";
 
 const Layout = () => {
@@ -34,8 +42,34 @@ const router = createBrowserRouter([
     path: "/login",
     element: <LoginPage />,
   },
+  {
+    path: "/register",
+    element: <RegisterPage />,
+  },
 ]);
 
 export default function App() {
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.account.isLoading);
+
+  useEffect(() => {
+    const getAccount = async () => {
+      // Không có token thì khỏi hỏi backend, chắc chắn chưa đăng nhập
+      if (!localStorage.getItem("access_token")) {
+        dispatch(doGetAccountFailAction());
+        return;
+      }
+      const res = await callFetchAccount();
+      if (res && res.data) {
+        dispatch(doGetAccountAction(res.data));
+      } else {
+        dispatch(doGetAccountFailAction());
+      }
+    };
+    getAccount();
+  }, []);
+  if (isLoading) {
+    return <Loading />;
+  }
   return <RouterProvider router={router} />;
 }
