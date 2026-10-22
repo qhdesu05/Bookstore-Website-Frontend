@@ -6,9 +6,12 @@ import Footer from "./components/Footer";
 import Home from "./components/Home";
 import NotFound from "./components/NotFound";
 import Loading from "./components/Loading";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ContactPage from "./pages/contact";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
+import OrderPage from "./pages/order";
+import AdminPage from "./pages/admin";
 import { callFetchAccount } from "./services/api";
 import {
   doGetAccountAction,
@@ -36,7 +39,25 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "contact", element: <ContactPage /> },
+      {
+        path: "order",
+        element: (
+          <ProtectedRoute>
+            <OrderPage />
+          </ProtectedRoute>
+        ),
+      },
     ],
+  },
+  {
+    path: "/admin",
+    element: (
+      <ProtectedRoute role="ADMIN">
+        <Outlet />
+      </ProtectedRoute>
+    ),
+    errorElement: <NotFound />,
+    children: [{ index: true, element: <AdminPage /> }],
   },
   {
     path: "/login",
