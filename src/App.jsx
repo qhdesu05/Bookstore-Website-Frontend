@@ -18,7 +18,7 @@ import {
   doGetAccountFailAction,
 } from "./redux/account/accountSlice";
 import "./styles/reset.scss";
-
+import BookPage from "./pages/book";
 const Layout = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -39,6 +39,11 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: "contact", element: <ContactPage /> },
+      {
+        //:slug là tham số động, khớp với mọi giá trị. /book/abc, /book/xyz đều vào BookPage
+        path: "book/:slug",
+        element: <BookPage />,
+      },
       {
         path: "order",
         element: (
