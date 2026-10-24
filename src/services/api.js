@@ -31,3 +31,16 @@ export const callFetchCategory = () => {
 export const callFetchBookById = (id) => {
   return axios.get(`/api/v1/book/${id}`);
 };
+
+// ===== Đơn hàng =====
+export const callPlaceOrder = (data) => {
+  return axios.post("/api/v1/order", { ...data });
+};
+
+export const callOrderHistory = () => {
+  return axios.get("/api/v1/history");
+};
+// ===== Admin =====
+export const callFetchDashboard = () => {
+  return axios.get("/api/v1/database/dashboard");
+};

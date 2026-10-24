@@ -19,6 +19,7 @@ import {
 } from "./redux/account/accountSlice";
 import "./styles/reset.scss";
 import BookPage from "./pages/book";
+import HistoryPage from "./pages/history";
 const Layout = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -49,6 +50,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <OrderPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "history",
+        element: (
+          <ProtectedRoute>
+            <HistoryPage />
           </ProtectedRoute>
         ),
       },

@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { Breadcrumb, Col, Divider, Rate, Row } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import { Breadcrumb, Col, Divider, Rate, Row, message } from "antd";
 import { HomeOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { BsCartPlus } from "react-icons/bs";
 import ImageGallery from "react-image-gallery";
@@ -8,9 +8,14 @@ import BookLoader from "./BookLoader";
 import { formatVND } from "../../utils/helper";
 import "./book.scss";
 import ModalGallery from "./ModalGallery";
+import { doAddBookAction } from "../../redux/order/orderSlice";
+import { useDispatch } from "react-redux";
+
 const ViewDetail = (props) => {
   const { dataBook } = props;
   const refGallery = useRef(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [currentQuantity, setCurrentQuantity] = useState(1);
 
   const images = dataBook?.items ?? [];
@@ -40,18 +45,31 @@ const ViewDetail = (props) => {
     // Ép vào khoảng [1, maxQuantity] và làm tròn xuống số nguyên
     setCurrentQuantity(Math.min(Math.max(Math.floor(value), 1), maxQuantity));
   };
+  const addToCart = () => {
+    dispatch(
+      doAddBookAction({
+        _id: dataBook._id,
+        quantity: currentQuantity,
+        detail: {
+          _id: dataBook._id,
+          mainText: dataBook.mainText,
+          price: dataBook.price,
+          thumbnail: dataBook.thumbnail,
+          quantity: dataBook.quantity, // tồn kho
+        },
+      }),
+    );
+  };
 
   const handleAddToCart = () => {
-    console.log(">>> thêm vào giỏ:", {
-      quantity: currentQuantity,
-      book: dataBook,
-    });
+    addToCart();
+    message.success("Sản phẩm đã được thêm vào Giỏ hàng");
   };
 
   const handleBuyNow = () => {
-    console.log(">>> mua ngay:", { quantity: currentQuantity, book: dataBook });
+    addToCart();
+    navigate("/order");
   };
-
   return (
     <div style={{ background: "#efefef", padding: "20px 0" }}>
       <div
