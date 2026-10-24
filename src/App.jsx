@@ -20,6 +20,7 @@ import {
 import "./styles/reset.scss";
 import BookPage from "./pages/book";
 import HistoryPage from "./pages/history";
+import LayoutAdmin from "./components/Admin/LayoutAdmin";
 const Layout = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -67,7 +68,7 @@ const router = createBrowserRouter([
     path: "/admin",
     element: (
       <ProtectedRoute role="ADMIN">
-        <Outlet />
+        <LayoutAdmin />
       </ProtectedRoute>
     ),
     errorElement: <NotFound />,
