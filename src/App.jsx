@@ -22,6 +22,8 @@ import BookPage from "./pages/book";
 import HistoryPage from "./pages/history";
 import LayoutAdmin from "./components/Admin/LayoutAdmin";
 import ManageUserPage from "./pages/admin/user";
+import ManageBookPage from "./pages/admin/book";
+
 const Layout = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -76,6 +78,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <AdminPage /> },
       { path: "user", element: <ManageUserPage /> },
+      { path: "book", element: <ManageBookPage /> },
     ],
   },
   {

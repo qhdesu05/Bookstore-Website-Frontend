@@ -64,3 +64,68 @@ export const callUpdateUser = (_id, fullName, phone) => {
 export const callDeleteUser = (id) => {
   return axios.delete(`/api/v1/user/${id}`);
 };
+
+// ===== Quản lý sách (admin) =====
+export const callCreateBook = (
+  thumbnail,
+  slider,
+  mainText,
+  author,
+  price,
+  sold,
+  quantity,
+  category,
+) => {
+  return axios.post("/api/v1/book", {
+    thumbnail,
+    slider,
+    mainText,
+    author,
+    price,
+    sold,
+    quantity,
+    category,
+  });
+};
+
+export const callUpdateBook = (
+  id,
+  thumbnail,
+  slider,
+  mainText,
+  author,
+  price,
+  sold,
+  quantity,
+  category,
+) => {
+  return axios.put(`/api/v1/book/${id}`, {
+    thumbnail,
+    slider,
+    mainText,
+    author,
+    price,
+    sold,
+    quantity,
+    category,
+  });
+};
+
+export const callDeleteBook = (id) => {
+  return axios.delete(`/api/v1/book/${id}`);
+};
+
+export const callUploadBookImg = (fileImg) => {
+  const bodyFormData = new FormData();
+  bodyFormData.append("fileImg", fileImg);
+
+  return axios({
+    method: "post",
+    url: "/api/v1/file/upload",
+    data: bodyFormData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      "upload-type": "book",
+    },
+  });
+};

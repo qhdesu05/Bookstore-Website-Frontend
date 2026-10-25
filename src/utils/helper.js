@@ -24,3 +24,12 @@ export const getErrorMessage = (res) => {
   const msg = res?.message;
   return Array.isArray(msg) ? msg[0] : msg;
 };
+// Đọc một file ảnh thành chuỗi base64 để hiện xem trước
+export const getBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+  });
+};
