@@ -21,6 +21,7 @@ import "./styles/reset.scss";
 import BookPage from "./pages/book";
 import HistoryPage from "./pages/history";
 import LayoutAdmin from "./components/Admin/LayoutAdmin";
+import ManageUserPage from "./pages/admin/user";
 const Layout = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -72,7 +73,10 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     errorElement: <NotFound />,
-    children: [{ index: true, element: <AdminPage /> }],
+    children: [
+      { index: true, element: <AdminPage /> },
+      { path: "user", element: <ManageUserPage /> },
+    ],
   },
   {
     path: "/login",

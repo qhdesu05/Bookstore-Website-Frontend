@@ -19,3 +19,8 @@ export const convertSlug = (str = "") => {
     .replace(/\s+/g, "-") // khoảng trắng → dấu gạch ngang
     .replace(/-+/g, "-"); // gộp nhiều gạch liền nhau
 };
+// Backend đôi khi trả message là mảng, đôi khi là chuỗi. Hàm này luôn trả ra một chuỗi.
+export const getErrorMessage = (res) => {
+  const msg = res?.message;
+  return Array.isArray(msg) ? msg[0] : msg;
+};
