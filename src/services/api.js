@@ -129,3 +129,10 @@ export const callUploadBookImg = (fileImg) => {
     },
   });
 };
+export const callFetchListOrder = (query) => {
+  return axios.get(`/api/v1/order?${query}`);
+};
+
+export const callRefreshToken = () => {
+  return axios.get("/api/v1/auth/refresh");
+};

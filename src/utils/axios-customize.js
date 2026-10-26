@@ -1,17 +1,22 @@
 import axios from "axios";
+import { Mutex } from "async-mutex";
 
-const baseUrl = import.meta.env.VITE_BACKEND_URL;
+const mutex = new Mutex();
+
+const REFRESH_URL = "/api/v1/auth/refresh";
+// Các API không bao giờ thử làm mới token (tránh vòng lặp, và lỗi đăng nhập sai mật khẩu cũng là 401)
+const SKIP_REFRESH_URLS = [REFRESH_URL, "/api/v1/auth/login"];
+// Các trang bắt buộc đăng nhập
+const PROTECTED_PATHS = ["/admin", "/order", "/history"];
 
 const instance = axios.create({
-  baseURL: baseUrl,
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: true,
 });
 
-// Chạy TRƯỚC khi mỗi request được gửi đi
-// Add a request interceptor
+// ===== Trước khi gửi: gắn token =====
 instance.interceptors.request.use(
   function (config) {
-    // Do something before request is sent
     const token = window.localStorage.getItem("access_token");
     if (token) {
       config.headers.Authorization = "Bearer " + token;
@@ -19,33 +24,72 @@ instance.interceptors.request.use(
     return config;
   },
   function (error) {
-    // Do something with request error
     return Promise.reject(error);
   },
 );
 
-// Chạy SAU khi nhận được phản hồi
-// Add a response interceptor
+// Xin token mới. Mutex bảo đảm mỗi lúc chỉ MỘT lượt xin token chạy.
+const handleRefreshToken = async (failedToken) => {
+  return await mutex.runExclusive(async () => {
+    // Trong lúc chờ tới lượt, có thể request khác đã xin xong rồi: dùng luôn token đó
+    const currentToken = localStorage.getItem("access_token");
+    if (currentToken && currentToken !== failedToken) {
+      return currentToken;
+    }
+
+    const res = await instance.get(REFRESH_URL);
+    if (res && res.data) {
+      localStorage.setItem("access_token", res.data.access_token);
+      return res.data.access_token;
+    }
+    return null;
+  });
+};
+
+// Hết phiên: chỉ đẩy về /login nếu đang ở trang bắt buộc đăng nhập
+const redirectToLoginIfNeeded = () => {
+  const path = window.location.pathname;
+  if (PROTECTED_PATHS.some((p) => path.startsWith(p))) {
+    window.location.href = "/login";
+  }
+};
+
+// ===== Sau khi nhận phản hồi =====
 instance.interceptors.response.use(
   function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    // Thành công (status 2xx): chỉ lấy phần body
     return response && response.data ? response.data : response;
   },
-  function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    // Server có trả lời nhưng lỗi (400, 401, 404, 500...)
-    if (error.response && error.response.data) {
-      return error.response.data;
+  async function (error) {
+    const config = error.config;
+
+    const shouldRefresh =
+      config &&
+      error.response?.status === 401 &&
+      !config._retry &&
+      !SKIP_REFRESH_URLS.includes(config.url);
+
+    if (shouldRefresh) {
+      const failedToken = config.headers?.Authorization?.replace("Bearer ", "");
+      const newToken = await handleRefreshToken(failedToken);
+
+      if (newToken) {
+        config._retry = true; // đánh dấu: chỉ thử lại một lần
+        return instance.request(config); // gửi lại request ban đầu
+      }
+
+      // Xin token mới thất bại: hết phiên đăng nhập
+      localStorage.removeItem("access_token");
+      redirectToLoginIfNeeded();
     }
-    // Không kết nối được server (tắt backend, mất mạng, lỗi CORS...)
-    return {
-      statusCode: 0,
-      message: "Không kết nối được tới server",
-      data: null,
-    };
+
+    // Server có trả lời lỗi → trả body lỗi; không kết nối được → trả object báo lỗi
+    return (
+      error.response?.data ?? {
+        statusCode: 0,
+        message: "Không kết nối được tới server",
+        data: null,
+      }
+    );
   },
 );
 
