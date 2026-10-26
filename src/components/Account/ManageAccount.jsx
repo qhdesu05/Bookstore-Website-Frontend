@@ -26,7 +26,7 @@ const ManageAccount = (props) => {
       onCancel={() => setIsModalOpen(false)}
       maskClosable={false}
       destroyOnClose
-      width="60vw"
+      width={800}
     >
       <Tabs defaultActiveKey="info" items={items} />
     </Modal>

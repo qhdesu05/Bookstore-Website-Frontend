@@ -18,7 +18,7 @@ const UserViewDetail = (props) => {
   return (
     <Drawer
       title="Chi tiết người dùng"
-      width="50vw"
+      width={600}
       onClose={onClose}
       open={openViewDetail}
     >

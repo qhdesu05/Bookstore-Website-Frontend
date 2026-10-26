@@ -60,6 +60,7 @@ const History = () => {
     <div>
       <div style={{ margin: "15px 0" }}>Lịch sử đặt hàng:</div>
       <Table
+        scroll={{ x: "max-content" }}
         rowKey="_id"
         loading={isLoading}
         columns={columns}

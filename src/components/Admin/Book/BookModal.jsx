@@ -215,7 +215,7 @@ const BookModal = (props) => {
         okText={isUpdate ? "Cập nhật" : "Tạo mới"}
         cancelText="Hủy"
         confirmLoading={isSubmit}
-        width="50vw"
+        width={800}
         maskClosable={false}
         forceRender
       >
@@ -223,7 +223,7 @@ const BookModal = (props) => {
 
         <Form form={form} name="basic" onFinish={onFinish} autoComplete="off">
           <Row gutter={15}>
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <Form.Item
                 labelCol={{ span: 24 }}
                 label="Tên sách"
@@ -233,7 +233,7 @@ const BookModal = (props) => {
                 <Input />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <Form.Item
                 labelCol={{ span: 24 }}
                 label="Tác giả"
@@ -244,7 +244,7 @@ const BookModal = (props) => {
               </Form.Item>
             </Col>
 
-            <Col span={6}>
+            <Col xs={12} md={6}>
               <Form.Item
                 labelCol={{ span: 24 }}
                 label="Giá tiền"
@@ -262,7 +262,7 @@ const BookModal = (props) => {
                 />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={12} md={6}>
               <Form.Item
                 labelCol={{ span: 24 }}
                 label="Thể loại"
@@ -272,7 +272,7 @@ const BookModal = (props) => {
                 <Select showSearch allowClear options={listCategory} />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={12} md={6}>
               <Form.Item
                 labelCol={{ span: 24 }}
                 label="Số lượng"
@@ -282,7 +282,7 @@ const BookModal = (props) => {
                 <InputNumber min={1} style={{ width: "100%" }} />
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={12} md={6}>
               <Form.Item
                 labelCol={{ span: 24 }}
                 label="Đã bán"
@@ -296,7 +296,7 @@ const BookModal = (props) => {
               </Form.Item>
             </Col>
 
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <Form.Item labelCol={{ span: 24 }} label="Ảnh Thumbnail">
                 <Upload
                   listType="picture-card"
@@ -311,7 +311,7 @@ const BookModal = (props) => {
                 </Upload>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} md={12}>
               <Form.Item labelCol={{ span: 24 }} label="Ảnh Slider">
                 <Upload
                   multiple

@@ -25,7 +25,7 @@ const BookViewDetail = (props) => {
   return (
     <Drawer
       title="Chức năng xem chi tiết"
-      width="50vw"
+      width={600}
       onClose={onClose}
       open={openViewDetail}
     >

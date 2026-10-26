@@ -116,6 +116,7 @@ const ManageOrder = () => {
     <Row gutter={[20, 20]}>
       <Col span={24}>
         <Table
+          scroll={{ x: "max-content" }}
           title={renderHeader}
           loading={isLoading}
           columns={columns}

@@ -95,7 +95,15 @@ const LayoutAdmin = () => {
     <>
       {" "}
       <Layout style={{ minHeight: "100vh" }} className="layout-admin">
-        <Sider theme="light" collapsible collapsed={collapsed} trigger={null}>
+        <Sider
+          theme="light"
+          collapsible
+          collapsed={collapsed}
+          trigger={null}
+          breakpoint="md"
+          collapsedWidth={0}
+          onBreakpoint={(broken) => setCollapsed(broken)}
+        >
           <div style={{ height: 32, margin: 16, textAlign: "center" }}>
             Admin
           </div>

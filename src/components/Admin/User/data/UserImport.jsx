@@ -83,7 +83,7 @@ const UserImport = (props) => {
   return (
     <Modal
       title="Import data user"
-      width="50vw"
+      width={700}
       open={openModalImport}
       onOk={handleSubmit}
       onCancel={handleClose}

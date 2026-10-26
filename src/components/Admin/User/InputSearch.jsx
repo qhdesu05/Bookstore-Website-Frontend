@@ -39,17 +39,17 @@ const InputSearch = (props) => {
       onFinish={onFinish}
     >
       <Row gutter={24}>
-        <Col span={8}>
+        <Col xs={24} md={8}>
           <Form.Item labelCol={{ span: 24 }} name="fullName" label="Name">
             <Input />
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col xs={24} md={8}>
           <Form.Item labelCol={{ span: 24 }} name="email" label="Email">
             <Input />
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col xs={24} md={8}>
           <Form.Item labelCol={{ span: 24 }} name="phone" label="Số điện thoại">
             <Input />
           </Form.Item>

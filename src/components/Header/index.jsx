@@ -1,22 +1,26 @@
+import { useState } from "react";
 import {
   Avatar,
   Badge,
   Button,
+  Drawer,
   Dropdown,
   Empty,
+  Menu,
   Popover,
   Space,
   message,
 } from "antd";
+import { MenuOutlined } from "@ant-design/icons";
 import { FiShoppingCart } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import ManageAccount from "../Account/ManageAccount";
 import { callLogout } from "../../services/api";
 import { doLogoutAction } from "../../redux/account/accountSlice";
 import { doClearCartAction } from "../../redux/order/orderSlice";
 import { formatVND } from "../../utils/helper";
-import { useState } from "react";
-import ManageAccount from "../Account/ManageAccount";
+import "./header.scss";
 
 const Header = (props) => {
   const navigate = useNavigate();
@@ -24,6 +28,8 @@ const Header = (props) => {
   const isAuthenticated = useSelector((state) => state.account.isAuthenticated);
   const user = useSelector((state) => state.account.user);
   const carts = useSelector((state) => state.order.carts);
+
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [showManageAccount, setShowManageAccount] = useState(false);
 
   const handleLogout = async () => {
@@ -37,6 +43,7 @@ const Header = (props) => {
     }
   };
 
+  // Các mục của người đã đăng nhập: dùng cho cả Dropdown (máy tính) lẫn Drawer (điện thoại)
   const items = [
     {
       label: (
@@ -65,6 +72,14 @@ const Header = (props) => {
       key: "admin",
     });
   }
+
+  // Người chưa đăng nhập thì trong Drawer chỉ có đăng nhập / đăng ký
+  const drawerItems = isAuthenticated
+    ? items
+    : [
+        { label: <Link to="/login">Đăng nhập</Link>, key: "login" },
+        { label: <Link to="/register">Đăng ký</Link>, key: "register" },
+      ];
 
   const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user?.avatar}`;
 
@@ -118,55 +133,72 @@ const Header = (props) => {
 
   return (
     <>
-      <header
-        style={{
-          display: "flex",
-          gap: 20,
-          alignItems: "center",
-          padding: "10px 20px",
-          borderBottom: "1px solid #ddd",
-        }}
-      >
-        <span
-          style={{ cursor: "pointer", fontWeight: 700 }}
-          onClick={() => navigate("/")}
-        >
-          My Shop
-        </span>
+      <div className="header-container">
+        <header className="page-header">
+          <MenuOutlined
+            className="toggle"
+            onClick={() => setOpenDrawer(true)}
+          />
 
-        <input
-          placeholder="Bạn tìm gì hôm nay"
-          value={props.searchTerm}
-          onChange={(e) => props.setSearchTerm(e.target.value)}
-          style={{ flex: 1, padding: 8 }}
-        />
-
-        <Popover
-          placement="bottomRight"
-          title="Sản phẩm mới thêm"
-          content={contentPopover}
-        >
-          <Badge count={carts.length} size="small" showZero>
-            <FiShoppingCart style={{ fontSize: 22, cursor: "pointer" }} />
-          </Badge>
-        </Popover>
-
-        {!isAuthenticated ? (
-          <span
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate("/login")}
-          >
-            Tài Khoản
+          <span className="logo" onClick={() => navigate("/")}>
+            My Shop
           </span>
-        ) : (
-          <Dropdown menu={{ items }} trigger={["click"]}>
-            <Space style={{ cursor: "pointer" }}>
-              <Avatar src={urlAvatar} />
-              {user?.fullName}
-            </Space>
-          </Dropdown>
+
+          <input
+            className="input-search"
+            placeholder="Bạn tìm gì hôm nay"
+            value={props.searchTerm}
+            onChange={(e) => props.setSearchTerm(e.target.value)}
+          />
+
+          <Popover
+            placement="bottomRight"
+            title="Sản phẩm mới thêm"
+            content={contentPopover}
+          >
+            <Badge className="cart" count={carts.length} size="small" showZero>
+              <FiShoppingCart
+                className="icon-cart"
+                onClick={() => navigate("/order")}
+              />
+            </Badge>
+          </Popover>
+
+          <div className="account">
+            {!isAuthenticated ? (
+              <span onClick={() => navigate("/login")}>Tài Khoản</span>
+            ) : (
+              <Dropdown menu={{ items }} trigger={["click"]}>
+                <Space>
+                  <Avatar src={urlAvatar} />
+                  {user?.fullName}
+                </Space>
+              </Dropdown>
+            )}
+          </div>
+        </header>
+      </div>
+
+      <Drawer
+        title="Menu chức năng"
+        placement="left"
+        open={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+      >
+        {isAuthenticated && (
+          <Space style={{ marginBottom: 16 }}>
+            <Avatar src={urlAvatar} />
+            {user?.fullName}
+          </Space>
         )}
-      </header>
+        <Menu
+          mode="inline"
+          selectable={false}
+          items={drawerItems}
+          onClick={() => setOpenDrawer(false)}
+        />
+      </Drawer>
+
       <ManageAccount
         isModalOpen={showManageAccount}
         setIsModalOpen={setShowManageAccount}

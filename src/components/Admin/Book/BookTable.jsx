@@ -254,6 +254,7 @@ const BookTable = () => {
         </Col>
         <Col span={24}>
           <Table
+            scroll={{ x: "max-content" }}
             title={renderHeader}
             loading={isLoading}
             columns={columns}
