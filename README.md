@@ -2,9 +2,7 @@
 
 Ứng dụng web bán sách trực tuyến viết bằng **React**, gồm hai phần: **trang dành cho khách** (xem sách, giỏ hàng, đặt hàng) và **trang quản trị** (quản lý người dùng, sách, đơn hàng).
 
-## Ảnh chụp màn hình
-
-> _Thêm ảnh vào thư mục `docs/` rồi sửa đường dẫn bên dưới._
+## Ảnh sản phẩm
 
 | Trang chủ                   | Chi tiết sách                | Giỏ hàng                   |
 | --------------------------- | ---------------------------- | -------------------------- |
@@ -142,8 +140,6 @@ npm run dev
 ```
 
 Mở trình duyệt tại `http://localhost:3000`.
-
-> Backend cần bật CORS cho địa chỉ `http://localhost:3000` và cho phép gửi cookie (credentials), vì refresh token được lưu trong cookie.
 
 ### Build bản production
 
