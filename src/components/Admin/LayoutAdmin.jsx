@@ -14,6 +14,7 @@ import { callLogout } from "../../services/api";
 import { doLogoutAction } from "../../redux/account/accountSlice";
 import { doClearCartAction } from "../../redux/order/orderSlice";
 import "./layout.scss";
+import ManageAccount from "../Account/ManageAccount";
 
 const { Content, Sider } = Layout;
 
@@ -47,7 +48,7 @@ const LayoutAdmin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.account.user);
-
+  const [showManageAccount, setShowManageAccount] = useState(false);
   // Bỏ dấu "/" cuối nếu có: "/admin/" → "/admin"
   const selectedKey = location.pathname.replace(/\/$/, "") || "/admin";
 
@@ -63,6 +64,17 @@ const LayoutAdmin = () => {
   };
 
   const itemsDropdown = [
+    {
+      label: (
+        <span
+          style={{ cursor: "pointer" }}
+          onClick={() => setShowManageAccount(true)}
+        >
+          Quản lý tài khoản
+        </span>
+      ),
+      key: "account",
+    },
     {
       label: <Link to="/">Trang chủ</Link>,
       key: "home",
@@ -80,34 +92,43 @@ const LayoutAdmin = () => {
   const urlAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user?.avatar}`;
 
   return (
-    <Layout style={{ minHeight: "100vh" }} className="layout-admin">
-      <Sider theme="light" collapsible collapsed={collapsed} trigger={null}>
-        <div style={{ height: 32, margin: 16, textAlign: "center" }}>Admin</div>
-        <Menu mode="inline" selectedKeys={[selectedKey]} items={menuItems} />
-      </Sider>
+    <>
+      {" "}
+      <Layout style={{ minHeight: "100vh" }} className="layout-admin">
+        <Sider theme="light" collapsible collapsed={collapsed} trigger={null}>
+          <div style={{ height: 32, margin: 16, textAlign: "center" }}>
+            Admin
+          </div>
+          <Menu mode="inline" selectedKeys={[selectedKey]} items={menuItems} />
+        </Sider>
 
-      <Layout>
-        <div className="admin-header">
-          <span
-            style={{ fontSize: 18, cursor: "pointer" }}
-            onClick={() => setCollapsed(!collapsed)}
-          >
-            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          </span>
+        <Layout>
+          <div className="admin-header">
+            <span
+              style={{ fontSize: 18, cursor: "pointer" }}
+              onClick={() => setCollapsed(!collapsed)}
+            >
+              {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            </span>
 
-          <Dropdown menu={{ items: itemsDropdown }} trigger={["click"]}>
-            <Space style={{ cursor: "pointer" }}>
-              <Avatar src={urlAvatar} />
-              {user?.fullName}
-            </Space>
-          </Dropdown>
-        </div>
+            <Dropdown menu={{ items: itemsDropdown }} trigger={["click"]}>
+              <Space style={{ cursor: "pointer" }}>
+                <Avatar src={urlAvatar} />
+                {user?.fullName}
+              </Space>
+            </Dropdown>
+          </div>
 
-        <Content style={{ padding: 15 }}>
-          <Outlet />
-        </Content>
+          <Content style={{ padding: 15 }}>
+            <Outlet />
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+      <ManageAccount
+        isModalOpen={showManageAccount}
+        setIsModalOpen={setShowManageAccount}
+      />
+    </>
   );
 };
 

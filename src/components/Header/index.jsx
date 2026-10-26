@@ -15,6 +15,8 @@ import { callLogout } from "../../services/api";
 import { doLogoutAction } from "../../redux/account/accountSlice";
 import { doClearCartAction } from "../../redux/order/orderSlice";
 import { formatVND } from "../../utils/helper";
+import { useState } from "react";
+import ManageAccount from "../Account/ManageAccount";
 
 const Header = (props) => {
   const navigate = useNavigate();
@@ -22,6 +24,7 @@ const Header = (props) => {
   const isAuthenticated = useSelector((state) => state.account.isAuthenticated);
   const user = useSelector((state) => state.account.user);
   const carts = useSelector((state) => state.order.carts);
+  const [showManageAccount, setShowManageAccount] = useState(false);
 
   const handleLogout = async () => {
     const res = await callLogout();
@@ -35,6 +38,17 @@ const Header = (props) => {
   };
 
   const items = [
+    {
+      label: (
+        <span
+          style={{ cursor: "pointer" }}
+          onClick={() => setShowManageAccount(true)}
+        >
+          Quản lý tài khoản
+        </span>
+      ),
+      key: "account",
+    },
     { label: <Link to="/history">Lịch sử mua hàng</Link>, key: "history" },
     {
       label: (
@@ -103,52 +117,61 @@ const Header = (props) => {
   );
 
   return (
-    <header
-      style={{
-        display: "flex",
-        gap: 20,
-        alignItems: "center",
-        padding: "10px 20px",
-        borderBottom: "1px solid #ddd",
-      }}
-    >
-      <span
-        style={{ cursor: "pointer", fontWeight: 700 }}
-        onClick={() => navigate("/")}
+    <>
+      <header
+        style={{
+          display: "flex",
+          gap: 20,
+          alignItems: "center",
+          padding: "10px 20px",
+          borderBottom: "1px solid #ddd",
+        }}
       >
-        My Shop
-      </span>
-
-      <input
-        placeholder="Bạn tìm gì hôm nay"
-        value={props.searchTerm}
-        onChange={(e) => props.setSearchTerm(e.target.value)}
-        style={{ flex: 1, padding: 8 }}
-      />
-
-      <Popover
-        placement="bottomRight"
-        title="Sản phẩm mới thêm"
-        content={contentPopover}
-      >
-        <Badge count={carts.length} size="small" showZero>
-          <FiShoppingCart style={{ fontSize: 22, cursor: "pointer" }} />
-        </Badge>
-      </Popover>
-
-      {!isAuthenticated ? (
-        <span style={{ cursor: "pointer" }} onClick={() => navigate("/login")}>
-          Tài Khoản
+        <span
+          style={{ cursor: "pointer", fontWeight: 700 }}
+          onClick={() => navigate("/")}
+        >
+          My Shop
         </span>
-      ) : (
-        <Dropdown menu={{ items }} trigger={["click"]}>
-          <Space style={{ cursor: "pointer" }}>
-            <Avatar src={urlAvatar} />
-            {user?.fullName}
-          </Space>
-        </Dropdown>
-      )}
-    </header>
+
+        <input
+          placeholder="Bạn tìm gì hôm nay"
+          value={props.searchTerm}
+          onChange={(e) => props.setSearchTerm(e.target.value)}
+          style={{ flex: 1, padding: 8 }}
+        />
+
+        <Popover
+          placement="bottomRight"
+          title="Sản phẩm mới thêm"
+          content={contentPopover}
+        >
+          <Badge count={carts.length} size="small" showZero>
+            <FiShoppingCart style={{ fontSize: 22, cursor: "pointer" }} />
+          </Badge>
+        </Popover>
+
+        {!isAuthenticated ? (
+          <span
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/login")}
+          >
+            Tài Khoản
+          </span>
+        ) : (
+          <Dropdown menu={{ items }} trigger={["click"]}>
+            <Space style={{ cursor: "pointer" }}>
+              <Avatar src={urlAvatar} />
+              {user?.fullName}
+            </Space>
+          </Dropdown>
+        )}
+      </header>
+      <ManageAccount
+        isModalOpen={showManageAccount}
+        setIsModalOpen={setShowManageAccount}
+      />
+    </>
   );
 };
 

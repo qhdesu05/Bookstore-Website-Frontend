@@ -38,6 +38,10 @@ export const accountSlice = createSlice({
       state.isAuthenticated = false;
       state.user = initialState.user;
     },
+    // Cập nhật thông tin hiển thị của user đang đăng nhập. payload: { avatar, phone, fullName }
+    doUpdateUserInfoAction: (state, action) => {
+      state.user = { ...state.user, ...action.payload };
+    },
   },
 });
 
@@ -46,6 +50,7 @@ export const {
   doGetAccountAction,
   doGetAccountFailAction,
   doLogoutAction,
+  doUpdateUserInfoAction,
 } = accountSlice.actions;
 
 export default accountSlice.reducer;
